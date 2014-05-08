@@ -4,3 +4,7 @@ before_install:
 language: node_js
 node_js:
 - "0.10"
+env:
+  global:
+    secure: eIHFrPJTpRqbSfgVUOlMhvPd/nQ66FlcROFBmyKkgiYq9/XC97dUt2oLHnX9X3uI70mfrl+rNHk9WaG2yMz4ArJyJvmIC+58h4wy4dt6nQmae6JNCH49U9uptZLYcosR/kiBDKRRGRqrGGbiyXyhmLasMrwxtAyE9WTxpzt28SQ=
+    secure: ar/Cuv9wcwrmuqDz1LMYSDfZ6KrsI8/qhTgMwugsiU6aHUY1eGMO1KNMQEBxcIR19ZKjX7UYU3miWgLkIrnrzR1UIpxl/erFm8rvivXmoxueSG6iu5stNDNgk2JUM4u6YYB/Dn8LMhusXBJCTuS2KKYiZ+7gfQ/U8PJk9c7ZD+k=
