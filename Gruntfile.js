@@ -81,11 +81,26 @@ module.exports = exports = function(grunt) {
                 }
             }
         },
+        jasmine: {
+            api: {
+                options: {
+                    specs: 'test/test.api.js',
+                    vendor: [
+                        'dist/localforage.js'
+                    ]
+                }
+            }
+        },
         jshint: {
             options: {
                 jshintrc: '.jshintrc'
             },
-            source: ['Gruntfile.js', 'src/*.js', 'src/**/*.js']
+            source: [
+                'Gruntfile.js',
+                'src/*.js',
+                'src/**/*.js',
+                'test/**/test.api.js'
+            ]
         },
         shell: {
             options: {
@@ -131,14 +146,7 @@ module.exports = exports = function(grunt) {
     grunt.registerTask('docs', ['shell:serveDocs']);
     grunt.registerTask('publish', ['build', 'shell:publishDocs']);
 
-    grunt.registerTask('test-server', function() {
-        grunt.log.writeln('Starting web servers at test/server.coffee');
-
-        require('./test/server.coffee').listen(8181);
-        // Used to test cross-origin iframes.
-        require('./test/server.coffee').listen(8182);
-    });
-
     grunt.registerTask('serve', ['build', 'test-server', 'watch']);
-    grunt.registerTask('test', ['build', 'jshint', 'shell:component', 'test-server', 'casper']);
+    grunt.registerTask('test', ['build', 'jshint', 'shell:component',
+                                'jasmine']);
 };
