@@ -158,11 +158,7 @@ describe('localForage API', function() {
                         localforage.getItem('otherOfficeName', function(value) {
                             expect(value).toEqual('Initrode');
 
-                            localforage.key(0, function(emptyKey) {
-                                expect(emptyKey).toEqual(null);
-
-                                done();
-                            });
+                            done();
                         });
                     });
                 });
@@ -182,11 +178,7 @@ describe('localForage API', function() {
                 localforage.getItem('otherOfficeName').then(function(value) {
                     expect(value).toEqual('Initrode');
 
-                    localforage.key(0).then(function(emptyKey) {
-                        expect(emptyKey).toEqual(null);
-
-                        done();
-                    });
+                    done();
                 });
             });
         });

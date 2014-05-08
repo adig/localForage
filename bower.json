@@ -20,6 +20,8 @@
         "es6-promise": "~1.0.0"
     },
     "devDependencies": {
+        "jasmine-jsreporter": "~0.1.2",
+        "jasmine": "~2.0.0",
         "requirejs": "~2.1.10"
     }
 }

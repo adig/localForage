@@ -1,8 +1,78 @@
-/*global exports:true, require:true */
+/* jshint node:true */
 var path = require('path');
 
 module.exports = exports = function(grunt) {
     'use strict';
+
+    var SAUCELAB_BROWSERS = [
+        // Windows 7 -- IE
+        {
+            browserName: 'internet explorer',
+            version: '8',
+            platform: 'Windows 7'
+        },
+        {
+            browserName: 'internet explorer',
+            version: '9',
+            platform: 'Windows 7'
+        },
+        {
+            browserName: 'internet explorer',
+            version: '10',
+            platform: 'Windows 7'
+        },
+        {
+            browserName: 'internet explorer',
+            version: '11',
+            platform: 'Windows 7'
+        },
+
+        // Windows 7 -- Chrome
+        {
+            browserName: 'chrome',
+            version: '26',
+            platform: 'Windows 7'
+        },
+        {
+            browserName: 'chrome',
+            version: '30',
+            platform: 'Windows 7'
+        },
+        {
+            browserName: 'chrome',
+            version: '34',
+            platform: 'Windows 7'
+        },
+
+        // Windows XP -- Firefox
+        {
+            browserName: 'firefox',
+            version: '3.5',
+            platform: 'XP'
+        },
+        {
+            browserName: 'firefox',
+            version: '28',
+            platform: 'XP'
+        },
+        {
+            browserName: 'firefox',
+            version: '29',
+            platform: 'XP'
+        },
+
+        // OS X 10.9 -- Firefox
+        {
+            browserName: 'firefox',
+            version: '28',
+            platform: 'OS X 10.9'
+        },
+        {
+            browserName: 'firefox',
+            version: '28',
+            platform: 'OS X 10.9'
+        }
+    ];
 
     grunt.initConfig({
         casper: {
@@ -81,10 +151,21 @@ module.exports = exports = function(grunt) {
                 }
             }
         },
+        connect: {
+            test:{
+                options:{
+                    port: 9999,
+                    base: '.'
+                }
+            }
+        },
         jasmine: {
             api: {
                 options: {
+                    // host: 'http://127.0.0.1:9999',
                     specs: 'test/test.api.js',
+                    // src: 'test/test.main.html',
+                    // template: 'test/test.main.html',
                     vendor: [
                         'dist/localforage.js'
                     ]
@@ -101,6 +182,25 @@ module.exports = exports = function(grunt) {
                 'src/**/*.js',
                 'test/**/test.api.js'
             ]
+        },
+        'saucelabs-jasmine': {
+            all: {
+                options: {
+                    username: 'tofumatt',
+                    key: 'ed29f1fa-e4f1-4ddf-9f97-9f9cd680f29a',
+                    urls: ['http://127.0.0.1:9999/test/test.main.html'],
+                    tunnelTimeout: 5,
+                    build: process.env.TRAVIS_JOB_ID,
+                    concurrency: 3,
+                    browsers: SAUCELAB_BROWSERS,
+                    testname: 'localForage Tests',
+                    framework: 'jasmine',
+                    // tags: ['master'],
+                    onTestComplete: function(results) {
+                        return JSON.stringify(results);
+                    }
+                }
+            }
         },
         shell: {
             options: {
@@ -145,8 +245,17 @@ module.exports = exports = function(grunt) {
     grunt.registerTask('build', ['concat', 'uglify']);
     grunt.registerTask('docs', ['shell:serveDocs']);
     grunt.registerTask('publish', ['build', 'shell:publishDocs']);
+    grunt.registerTask('serve', ['connect', 'watch']);
 
-    grunt.registerTask('serve', ['build', 'test-server', 'watch']);
-    grunt.registerTask('test', ['build', 'jshint', 'shell:component',
-                                'jasmine']);
+    grunt.registerTask('travis', ['build', 'jshint', 'shell:component',
+                                  'jasmine', 'connect',
+                                  'saucelabs-jasmine']);
+
+    // Run tests on travis with Saucelabs.
+    if (process.env.TRAVIS_JOB_ID) {
+        grunt.registerTask('test', ['travis']);
+    } else {
+        grunt.registerTask('test', ['build', 'jshint', 'shell:component',
+                                    'jasmine']);
+    }
 };
