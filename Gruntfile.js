@@ -48,17 +48,17 @@ module.exports = exports = function(grunt) {
         {
             browserName: 'firefox',
             version: '3.5',
-            platform: 'XP'
+            platform: 'Windows XP'
         },
         {
             browserName: 'firefox',
             version: '28',
-            platform: 'XP'
+            platform: 'Windows XP'
         },
         {
             browserName: 'firefox',
             version: '29',
-            platform: 'XP'
+            platform: 'Windows XP'
         },
 
         // OS X 10.9 -- Firefox
@@ -71,7 +71,26 @@ module.exports = exports = function(grunt) {
             browserName: 'firefox',
             version: '28',
             platform: 'OS X 10.9'
-        }
+        },
+
+        // OS X 10.9 -- Safari
+        {
+            browserName: 'safari',
+            version: '7',
+            platform: 'OS X 10.9'
+        },
+
+        // OS X 10.8 -- Safari
+        {
+            browserName: 'safari',
+            version: '6',
+            platform: 'OS X 10.8'
+        },
+        {
+            browserName: 'firefox',
+            version: '28',
+            platform: 'OS X 10.9'
+        },
     ];
 
     grunt.initConfig({
@@ -154,8 +173,9 @@ module.exports = exports = function(grunt) {
         connect: {
             test:{
                 options:{
-                    port: 9999,
-                    base: '.'
+                    base: '.',
+                    hostname: '*',
+                    port: 9999
                 }
             }
         },
@@ -186,18 +206,14 @@ module.exports = exports = function(grunt) {
         'saucelabs-jasmine': {
             all: {
                 options: {
-                    username: 'tofumatt',
-                    key: 'ed29f1fa-e4f1-4ddf-9f97-9f9cd680f29a',
                     urls: ['http://127.0.0.1:9999/test/test.main.html'],
                     tunnelTimeout: 5,
                     build: process.env.TRAVIS_JOB_ID,
                     concurrency: 3,
                     browsers: SAUCELAB_BROWSERS,
                     testname: 'localForage Tests',
-                    framework: 'jasmine',
-                    // tags: ['master'],
                     onTestComplete: function(results) {
-                        return JSON.stringify(results);
+                        return results.passed;
                     }
                 }
             }
@@ -247,15 +263,13 @@ module.exports = exports = function(grunt) {
     grunt.registerTask('publish', ['build', 'shell:publishDocs']);
     grunt.registerTask('serve', ['connect', 'watch']);
 
-    grunt.registerTask('travis', ['build', 'jshint', 'shell:component',
-                                  'jasmine', 'connect',
-                                  'saucelabs-jasmine']);
+    var testTasks = ['build', 'jshint', 'shell:component', 'jasmine'];
 
     // Run tests on travis with Saucelabs.
     if (process.env.TRAVIS_JOB_ID) {
-        grunt.registerTask('test', ['travis']);
-    } else {
-        grunt.registerTask('test', ['build', 'jshint', 'shell:component',
-                                    'jasmine']);
+        testTasks.push('connect:test');
+        testTasks.push('saucelabs-jasmine');
     }
+
+    grunt.registerTask('test', testTasks);
 };
