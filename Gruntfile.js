@@ -204,7 +204,7 @@ module.exports = exports = function(grunt) {
             all: {
                 options: {
                     username: process.env.SAUCE_USERNAME,
-                    key: process.env.SAUCE_KEY,
+                    key: process.env.SAUCE_ACCESS_KEY,
                     urls: ['http://localhost:9999/test/test.main.html'],
                     tunnelTimeout: 5,
                     build: process.env.TRAVIS_JOB_ID,
@@ -263,7 +263,7 @@ module.exports = exports = function(grunt) {
 
     // Run tests on travis with Saucelabs.
     if (process.env.TRAVIS_JOB_ID ||
-        (process.env.SAUCE_USERNAME && process.env.SAUCE_KEY)) {
+        (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY)) {
         testTasks.push('connect:test');
         testTasks.push('saucelabs-jasmine');
     }
