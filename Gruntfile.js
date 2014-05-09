@@ -182,10 +182,7 @@ module.exports = exports = function(grunt) {
         jasmine: {
             api: {
                 options: {
-                    // host: 'http://127.0.0.1:9999',
                     specs: 'test/test.api.js',
-                    // src: 'test/test.main.html',
-                    // template: 'test/test.main.html',
                     vendor: [
                         'dist/localforage.js'
                     ]
@@ -206,15 +203,14 @@ module.exports = exports = function(grunt) {
         'saucelabs-jasmine': {
             all: {
                 options: {
-                    urls: ['http://127.0.0.1:9999/test/test.main.html'],
+                    username: process.env.SAUCE_USERNAME,
+                    key: process.env.SAUCE_KEY,
+                    urls: ['http://localhost:9999/test/test.main.html'],
                     tunnelTimeout: 5,
                     build: process.env.TRAVIS_JOB_ID,
                     concurrency: 3,
                     browsers: SAUCELAB_BROWSERS,
-                    testname: 'localForage Tests',
-                    onTestComplete: function(results) {
-                        return results.passed;
-                    }
+                    testname: 'localForage Tests'
                 }
             }
         },
@@ -266,7 +262,8 @@ module.exports = exports = function(grunt) {
     var testTasks = ['build', 'jshint', 'shell:component', 'jasmine'];
 
     // Run tests on travis with Saucelabs.
-    if (process.env.TRAVIS_JOB_ID) {
+    if (process.env.TRAVIS_JOB_ID ||
+        (process.env.SAUCE_USERNAME && process.env.SAUCE_KEY)) {
         testTasks.push('connect:test');
         testTasks.push('saucelabs-jasmine');
     }
