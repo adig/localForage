@@ -79,25 +79,35 @@ describe('localForage API', function() {
         });
     });
 
-    it('saving undefined returns null in the [callback]', function(done) {
+    it('returns null when saving undefined [callback]', function(done) {
         localforage.setItem('undef', undefined, function(setValue) {
             expect(setValue).toEqual(null);
 
-            localforage.getItem('undef', function(value) {
-                expect(value).toEqual(setValue);
-                done();
-            });
+            done();
         });
     });
 
-    it('saving undefined returns null in the [promise]', function(done) {
+    it('returns null when saving undefined [promise]', function(done) {
         localforage.setItem('undef', undefined).then(function(setValue) {
             expect(setValue).toEqual(null);
 
-            localforage.getItem('undef').then(function(value) {
-                expect(value).toEqual(setValue);
-                done();
-            });
+            done();
+        });
+    });
+
+    it('returns null for a non-existant key [callback]', function(done) {
+        localforage.getItem('undef', function(value) {
+            expect(value).toEqual(null);
+
+            done();
+        });
+    });
+
+    it('returns null for a non-existant key [promise]', function(done) {
+        localforage.getItem('undef').then(function(value) {
+            expect(value).toEqual(null);
+
+            done();
         });
     });
 
